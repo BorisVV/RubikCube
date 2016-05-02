@@ -23,6 +23,7 @@ public class RubikForm extends JFrame implements WindowListener{
         setVisible(true);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+
         rubikDataTable.setGridColor(Color.black);
         rubikDataTable.setModel(rubikCubeDataModel);
 

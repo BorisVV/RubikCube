@@ -2,6 +2,9 @@ package com.BorisV.java;
 
 import java.sql.*;
 
+import static java.sql.ResultSet.CONCUR_UPDATABLE;
+import static java.sql.ResultSet.TYPE_SCROLL_INSENSITIVE;
+
 public class RubikCubeDatabase {
 
     private static String DB_CONNECTION_URL = "jdbc:mysql://localhost:3306/";
@@ -9,11 +12,11 @@ public class RubikCubeDatabase {
     private static final String USER = "root";
     private static final String PASS = "primero";
 
-    static Statement statement = null;
-    static Connection conn = null;
-    static ResultSet rs = null;
+    private static Statement statement = null;
+    private static Connection conn = null;
+    private static ResultSet rs = null;
 
-    public final static String RUBIKCUBE_TABLE_NAME = "tuti";
+    public final static String RUBIKCUBE_TABLE_NAME = "rubiks";
     public final static String PK_COLUMN = "id";                   //Primary key column. Each movie will have a unique ID.
     //A primary key is needed to allow updates to the database on modifications to ResultSet
     public final static String RECORD_HOLDER_NAME_COLUMN = "holders";
@@ -82,19 +85,35 @@ public class RubikCubeDatabase {
             }
 
             conn = DriverManager.getConnection(DB_CONNECTION_URL + DB_NAME, USER, PASS);
-            statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            statement = conn.createStatement(TYPE_SCROLL_INSENSITIVE, CONCUR_UPDATABLE);
 
             if (!movieTableExists()) {
 
+
                 //Create a table in the database with 3 columns: Movie title, year and rating
-                String createTableSQL = "CREATE TABLE " + RUBIKCUBE_TABLE_NAME + " (" + PK_COLUMN + " int NOT NULL AUTO_INCREMENT, " + RECORD_HOLDER_NAME_COLUMN + " varchar(50), " + BEST_TIME_COLUMN + " double,  PRIMARY KEY(" + PK_COLUMN + "))";
+                String createTableSQL = "CREATE TABLE " + RUBIKCUBE_TABLE_NAME + " (" + PK_COLUMN
+                        + " int NOT NULL AUTO_INCREMENT, " + RECORD_HOLDER_NAME_COLUMN + " varchar(50), " + BEST_TIME_COLUMN
+                        + " double,  PRIMARY KEY(" + PK_COLUMN + "))";
                 statement.executeUpdate(createTableSQL);
                 System.out.println(createTableSQL);
 
-                System.out.println("tuti");
-                String addDataSQL = "INSERT INTO " + RUBIKCUBE_TABLE_NAME + "(" + RECORD_HOLDER_NAME_COLUMN + ", " + BEST_TIME_COLUMN +  ")" + " VALUES ('Robot Bolt II', 3.5, )";
-                statement.executeUpdate(addDataSQL);
+                String addDataSQL = "INSERT INTO RUBIKCUBE_TABLE_NAME (NULL , NULL ) VALUES (?, ?)";
+                PreparedStatement ps = conn.prepareStatement(addDataSQL);
+                ps.setString(1, "");
+                ps.setDouble(2, Double.parseDouble(null));
+                ps.executeUpdate();
+//                System.out.println("tuti");
+//                String addDataSQL = "INSERT INTO " + RUBIKCUBE_TABLE_NAME + "(" + RECORD_HOLDER_NAME_COLUMN + ", " + BEST_TIME_COLUMN +  ")" + " VALUES ('Robot Bolt II', 3.5, )";
+//                statement.executeUpdate(addDataSQL);
+                String newName = null;
+                double newRecord = Double.parseDouble(null);
+                String updateRecord = "UPDATE newName SET newRecord = ? WHERE " +
+                        "RECORD_HOLDER_NAME_COLUMN = ?";
+                PreparedStatement prUpdate = conn.prepareStatement(updateRecord);
+                prUpdate.setString(1, newName);
+                prUpdate.setDouble(2, newRecord);
 
+                ps.close();
             }
             return true;
 
